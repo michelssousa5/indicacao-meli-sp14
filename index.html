@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Programa de Indicação Meli — SP14 (Contratação Direta)</title>
+  <style>
+    :root {
+      --meli-yellow: #ffe600;
+      --meli-blue: #3483fa;
+      --meli-dark: #2d3277;
+      --meli-green: #00a650;
+      --meli-red: #f23d4f;
+      --bg-gray: #ebebeb;
+    }
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body { margin: 0; background-color: var(--bg-gray); color: #333; -webkit-font-smoothing: antialiased; }
+    
+    .header { background-color: var(--meli-yellow); padding: 14px 20px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #e6cf00; position: sticky; top: 0; z-index: 100; }
+    .header img { height: 38px; object-fit: contain; }
+
+    .container { width: 100%; max-width: 580px; margin: 16px auto 40px; background: #fff; padding: 24px 20px; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+    @media (max-width: 600px) {
+      .container { margin: 0 auto 20px; border-radius: 0 0 12px 12px; padding: 18px 16px; }
+    }
+
+    .profile-card { display: flex; align-items: center; gap: 16px; background: #f8f9fa; border: 1px solid #e2e6ea; padding: 16px; border-radius: 10px; margin-bottom: 18px; }
+    .profile-img-wrapper { position: relative; flex-shrink: 0; cursor: zoom-in; }
+    .profile-img { width: 84px; height: 84px; border-radius: 50%; object-fit: cover; border: 3px solid var(--meli-yellow); box-shadow: 0 2px 6px rgba(0,0,0,0.15); display: block; transition: transform 0.2s; }
+    .profile-img-wrapper:hover .profile-img { transform: scale(1.05); }
+    .zoom-hint { font-size: 10.5px; color: #555; text-align: center; margin-top: 4px; font-weight: 600; }
+    
+    .profile-info h2 { margin: 0 0 4px 0; font-size: 16.5px; color: #111; }
+    .profile-info p { margin: 0 0 10px 0; font-size: 13px; color: #555; line-height: 1.4; }
+    
+    .social-links { display: flex; flex-wrap: wrap; gap: 6px; }
+    .social-btn { text-decoration: none; font-size: 11.5px; font-weight: 700; padding: 6px 10px; border-radius: 5px; color: #fff; display: inline-flex; align-items: center; transition: opacity 0.2s; }
+    .social-btn:hover { opacity: 0.9; }
+    .btn-linkedin { background-color: #0a66c2; }
+    .btn-instagram { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+    .btn-facebook { background-color: #1877f2; }
+
+    @media (max-width: 420px) {
+      .profile-card { flex-direction: column; text-align: center; }
+      .social-links { justify-content: center; }
+    }
+
+    .photo-modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.92); align-items: center; justify-content: center; flex-direction: column; padding: 16px; cursor: zoom-out; }
+    .photo-modal.active { display: flex; animation: fadeIn 0.2s ease-in-out; }
+    .photo-modal img { max-width: 95%; max-height: 82vh; border-radius: 10px; border: 3px solid var(--meli-yellow); box-shadow: 0 8px 30px rgba(0,0,0,0.6); object-fit: contain; }
+    .photo-modal-caption { color: #fff; margin-top: 12px; font-size: 14px; text-align: center; }
+    .close-modal { position: absolute; top: 18px; right: 24px; color: #fff; font-size: 38px; font-weight: bold; cursor: pointer; line-height: 1; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .direct-hire-banner { background-color: #e8f8f0; border: 1.5px solid var(--meli-green); padding: 14px; border-radius: 8px; margin-bottom: 16px; font-size: 13.5px; line-height: 1.5; color: #145231; }
+    .reqs-box { background-color: #eef2ff; border-left: 4px solid var(--meli-blue); padding: 14px; border-radius: 6px; margin-bottom: 22px; font-size: 13.5px; line-height: 1.5; }
+    .reqs-box ul { margin: 6px 0 0 0; padding-left: 20px; }
+
+    .form-group { margin-bottom: 20px; }
+    label.question-title { display: block; font-weight: 700; font-size: 15px; color: #111; margin-bottom: 6px; line-height: 1.35; }
+    .hint-text { font-size: 12.5px; color: #666; margin-bottom: 8px; line-height: 1.4; }
+    
+    input[type="text"], input[type="email"], input[type="tel"] {
+      width: 100%; padding: 14px 12px; border: 1.5px solid #ccc; border-radius: 6px; font-size: 15px; transition: border-color 0.2s;
+    }
+    input:focus { border-color: var(--meli-blue); outline: none; box-shadow: 0 0 0 3px rgba(52,131,250,0.15); }
+    input.input-error { border-color: var(--meli-red) !important; background-color: #fff8f8; }
+    
+    .error-msg { display: none; color: #fff; background-color: var(--meli-red); padding: 10px 12px; border-radius: 6px; font-size: 13px; font-weight: 600; margin-top: 8px; line-height: 1.4; }
+
+    .option-card { display: flex; align-items: center; padding: 13px 14px; border: 1.5px solid #ccc; border-radius: 6px; margin-bottom: 8px; cursor: pointer; font-size: 14.5px; transition: all 0.2s; background: #fff; }
+    .option-card:hover { border-color: var(--meli-blue); background: #f8fbff; }
+    .option-card input { margin-right: 12px; transform: scale(1.25); accent-color: var(--meli-blue); }
+
+    .privacy-title { font-size: 16.5px; line-height: 1.45; color: #222; margin-bottom: 16px; }
+    .privacy-title a { color: var(--meli-blue); text-decoration: underline; font-weight: 600; }
+    .consent-card { border: 1.5px solid #bbb; border-radius: 8px; padding: 16px; background: #fff; cursor: pointer; display: flex; align-items: flex-start; gap: 12px; font-size: 14.5px; line-height: 1.5; color: #333; transition: all 0.2s; }
+    .consent-card.selected { border-color: var(--meli-blue); background-color: #f0f6ff; }
+    .consent-card input { margin-top: 4px; transform: scale(1.3); accent-color: var(--meli-blue); flex-shrink: 0; }
+
+    .nav-buttons { display: flex; gap: 12px; margin-top: 24px; }
+    .btn-back { flex: 1; background: #fff; color: var(--meli-blue); border: 1.5px solid var(--meli-blue); padding: 14px; font-size: 15px; font-weight: 700; border-radius: 6px; cursor: pointer; }
+    .btn-next { flex: 2; background: var(--meli-blue); color: #fff; border: none; padding: 15px; font-size: 15.5px; font-weight: 700; border-radius: 6px; cursor: pointer; width: 100%; }
+    .btn-next:disabled { background: #99c2ff; cursor: not-allowed; }
+
+    .duplicate-banner { text-align: center; padding: 20px 16px; background: #fff4e5; border-radius: 10px; border: 2px solid #f59f00; margin-bottom: 22px; display: none; }
+    .duplicate-banner h2 { color: #b45309; margin: 0 0 8px 0; font-size: 19px; }
+    .duplicate-banner p { margin: 0; font-size: 14px; color: #333; line-height: 1.5; }
+
+    .success-banner { text-align: center; padding: 20px 14px; background: #e8f8f0; border-radius: 10px; border: 1.5px solid var(--meli-green); margin-bottom: 18px; }
+    .success-banner h2 { color: var(--meli-green); margin: 0 0 8px 0; font-size: 20px; }
+    .success-banner p { margin: 0; font-size: 14px; color: #222; line-height: 1.45; }
+
+    .uber-alert-box { background-color: #fff5f5; border: 2px solid var(--meli-red); border-left: 6px solid var(--meli-red); border-radius: 10px; padding: 16px; margin-bottom: 22px; box-shadow: 0 3px 10px rgba(242,61,79,0.12); }
+    .uber-alert-box h3 { margin: 0 0 8px 0; color: #c92a2a; font-size: 16px; display: flex; align-items: center; gap: 6px; }
+    .uber-alert-box p { margin: 0 0 8px 0; font-size: 14px; line-height: 1.55; color: #222; }
+    .uber-alert-box p:last-child { margin-bottom: 0; }
+
+    .guide-section { margin-bottom: 20px; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px; background: #fafafa; }
+    .guide-section h3 { margin: 0 0 10px 0; font-size: 16px; color: var(--meli-dark); border-bottom: 2px solid var(--meli-yellow); padding-bottom: 6px; display: inline-block; }
+    .guide-section p, .guide-section li { font-size: 13.8px; line-height: 1.55; color: #333; margin-bottom: 8px; }
+    .guide-section ul { margin: 0; padding-left: 18px; }
+
+    .tip-highlight { background: #fff9db; border-left: 4px solid #f59f00; padding: 12px; border-radius: 6px; font-size: 13.5px; line-height: 1.5; margin-top: 10px; }
+
+    .hidden { display: none; }
+    .footer-qualtrics { text-align: center; font-size: 12px; color: #666; padding: 18px; background: var(--meli-yellow); margin-top: 30px; }
+  </style>
+</head>
+<body>
+
+  <!-- MODAL PARA VER A FOTO DO MICHEL EM TELA CHEIA -->
+  <div id="photo-modal" class="photo-modal" onclick="fecharFoto()">
+    <span class="close-modal">&times;</span>
+    <img src="michel.jpg" alt="Michel Silva de Sousa - Tela Cheia">
+    <div class="photo-modal-caption">
+      <strong>Michel Silva de Sousa</strong> — Setor de Inventário (Mercado Livre SP14)<br>
+      <small>(Toque em qualquer lugar para fechar)</small>
+    </div>
+  </div>
+
+  <!-- TOPO COM LOGO DO MERCADO LIVRE -->
+  <div class="header">
+    <img src="https://survey.mercadolibre.com/CP/Graphic.php?IM=IM_51G921loG9YpNhs" alt="Mercado Livre">
+  </div>
+
+  <div class="container">
+    <!-- CARD DE IDENTIFICAÇÃO E SEGURANÇA DO MICHEL -->
+    <div class="profile-card">
+      <div class="profile-img-wrapper" onclick="abrirFoto()" title="Clique para ampliar a foto">
+        <img src="michel.jpg" alt="Michel Silva de Sousa" class="profile-img">
+        <div class="zoom-hint">🔍 Ampliar foto</div>
+      </div>
+      <div class="profile-info">
+        <h2>Indicação Oficial: Michel Silva de Sousa</h2>
+        <p>Funcionário do Mercado Livre — Setor de <strong>Inventário (SP14 - Cajamar/SP)</strong>.<br>Verifique minhas redes sociais oficiais abaixo:</p>
+        <div class="social-links">
+          <a href="https://www.linkedin.com/in/michel-s-sousa/" target="_blank" rel="noopener noreferrer" class="social-btn btn-linkedin">LinkedIn</a>
+          <a href="https://www.instagram.com/michelssousa55/" target="_blank" rel="noopener noreferrer" class="social-btn btn-instagram">Instagram</a>
+          <a href="https://www.facebook.com/michelssousa55" target="_blank" rel="noopener noreferrer" class="social-btn btn-facebook">Facebook</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= TELA 1: DADOS DO CANDIDATO ================= -->
+    <div id="step-1">
+      <div class="direct-hire-banner">
+        <strong>✅ CONTRATAÇÃO DIRETA PELO MERCADO LIVRE (NÃO É AGÊNCIA!)</strong><br>
+        Esta indicação é para vaga <strong>100% efetiva (CLT) direto pelo Mercado Livre</strong> na unidade SP14. Não cobramos nada e não pedimos seu CPF.
+      </div>
+
+      <div class="reqs-box">
+        <strong>📋 Requisitos e Turnos Disponíveis:</strong>
+        <ul>
+          <li><strong>Escolaridade:</strong> Ensino Fundamental completo</li>
+          <li><strong>Idade:</strong> Maior de 18 anos</li>
+          <li><strong>Experiência:</strong> Não é necessário ter experiência (para Rep de Envios)!</li>
+          <li><strong>Turnos disponíveis:</strong> Manhã | Tarde | Noite/Madrugada</li>
+        </ul>
+      </div>
+
+      <form id="form-step-1" onsubmit="irParaTelaPrivacidade(event)" novalidate>
+        <div class="form-group">
+          <label class="question-title">* Nome completo da pessoa indicada:</label>
+          <input type="text" id="nome" required placeholder="Ex: João Carlos da Silva" oninput="validarNomeEmTempoReal()">
+          <div id="erro-nome" class="error-msg">
+            ⚠️ Atenção: Digite seu <strong>nome e sobrenome completos e verdadeiros</strong> (abreviações ou apenas duas letras como "de/da" não são aceitas).
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="question-title">* Telefone da pessoa indicada com DDD (sem pontos, exemplo: 11932455467):</label>
+          <div class="hint-text">Importante: Informe o mesmo número que está cadastrado no seu aplicativo da Uber.</div>
+          <input type="tel" id="telefone" required placeholder="11932455467" maxlength="11"
+                 oninput="this.value = this.value.replace(/\D/g, '').slice(0, 11)"
+                 pattern="[0-9]{10,11}">
+        </div>
+
+        <div class="form-group">
+          <label class="question-title">* E-mail da pessoa indicada:</label>
+          <div class="hint-text">Você receberá uma confirmação automática da sua indicação neste e-mail.</div>
+          <input type="email" id="email" required placeholder="seuemail@exemplo.com">
+        </div>
+
+        <div class="form-group">
+          <label class="question-title">* Para qual vaga você quer indicar essa pessoa?</label>
+          <div class="hint-text">Atenção: a vaga de Operador de Empilhadeira exige CNH - categoria B e curso de operador de empilhadeira concluído. Só indique se a pessoa já tem os dois.</div>
+          <label class="option-card">
+            <input type="radio" name="vaga" value="Rep de Envios" required>
+            <span>Rep de Envios</span>
+          </label>
+          <label class="option-card">
+            <input type="radio" name="vaga" value="Operador de Empilhadeira" required>
+            <span>Operador de Empilhadeira</span>
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label class="question-title">* Você sabe se a pessoa que você está indicando é uma pessoa com deficiência?</label>
+          <label class="option-card">
+            <input type="radio" name="pcd" value="Sim" required>
+            <span>Sim</span>
+          </label>
+          <label class="option-card">
+            <input type="radio" name="pcd" value="Não" required>
+            <span>Não</span>
+          </label>
+          <label class="option-card">
+            <input type="radio" name="pcd" value="Não sei / Prefiro não informar" required>
+            <span>Não sei / Prefiro não informar</span>
+          </label>
+        </div>
+
+        <button type="submit" class="btn-next">Avançar &gt;</button>
+      </form>
+    </div>
+
+    <!-- ================= TELA 2: DECLARAÇÃO DE PRIVACIDADE (LGPD) ================= -->
+    <div id="step-2" class="hidden">
+      <form id="form-step-2" onsubmit="finalizarEnvio(event)">
+        <div class="privacy-title">
+          * Declaração de privacidade<br>
+          Para mais detalhes sobre como tratamos dados pessoais, consulte nossa 
+          <a href="https://careers-meli.cdn.prismic.io/careers-meli/aOz8UZ5xUNkB147Q_br-declaracao-de-privacidade-2025.pdf" target="_blank" rel="noopener noreferrer">Política de Privacidade</a>.
+        </div>
+
+        <label class="consent-card" id="card-lgpd">
+          <input type="checkbox" id="lgpd-check" required onchange="document.getElementById('card-lgpd').classList.toggle('selected', this.checked)">
+          <span>
+            Eu confirmo que obtive o consentimento da pessoa indicada para compartilhar seus dados pessoais, incluindo o CPF, com o Mercado Livre, e que a pessoa indicada está ciente de que suas informações serão utilizadas exclusivamente para verificação de vínculo empregatício e possíveis futuras comunicações relacionadas à sua candidatura.
+          </span>
+        </label>
+
+        <div class="nav-buttons">
+          <button type="button" class="btn-back" id="btn-voltar" onclick="voltarParaTela1()">&lt; Voltar</button>
+          <button type="submit" class="btn-next" id="btn-finalizar">Avançar &gt;</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- ================= TELA 3: SUCESSO + ALERTA UBER + BENEFÍCIOS ================= -->
+    <div id="step-3" class="hidden">
+      
+      <div id="banner-sucesso" class="success-banner">
+        <h2>🎉 Indicação Enviada com Sucesso!</h2>
+        <p>Seus dados foram gravados na planilha oficial e enviamos um <strong>e-mail de confirmação</strong> para você! Sua indicação já está na fila do <strong>Mercado Livre (SP14 - Cajamar/SP)</strong>.</p>
+      </div>
+
+      <div id="banner-duplicado" class="duplicate-banner">
+        <h2>⚠️ Você já foi indicado(a)!</h2>
+        <p>Identificamos na planilha oficial que este <strong>número de telefone ou e-mail já foi enviado anteriormente</strong> para o Mercado Livre por Michel Silva de Sousa. Não é necessário enviar novamente! Confira abaixo as orientações importantes:</p>
+      </div>
+
+      <div class="uber-alert-box">
+        <h3>🚨 ALERTA MUITO IMPORTANTE: APLICATIVO DA UBER</h3>
+        <p>Nos seus primeiros dias (antes de você começar a utilizar o ônibus fretado), o Mercado Livre disponibiliza um <strong>Voucher da Uber</strong> para garantir o seu transporte.</p>
+        <p>Esse voucher é enviado diretamente para o <strong>número de celular</strong> que você informou ao Mercado Livre. Por isso, é <strong>extremamente importante</strong> que:</p>
+        <p>✅ Você tenha o <strong>aplicativo da Uber instalado e ativo no celular</strong>;<br>
+           ✅ O seu cadastro na Uber esteja <strong>atualizado exatamente com o mesmo número de telefone</strong> informado aqui e no dia da sua Integração.<br>
+           <em>Muitas pessoas acabam tendo problemas para receber o voucher no primeiro dia por estarem com número antigo ou diferente na Uber. Atualize o seu aplicativo desde já!</em></p>
+      </div>
+
+      <div class="guide-section">
+        <h3>🚌 Transporte Fretado e Café da Manhã</h3>
+        <p>Após os primeiros dias, o Mercado Livre disponibiliza <strong>fretado gratuito (+ Vale-Transporte)</strong> com horários específicos. O fretado sempre chega na unidade cerca de <strong>1 hora antes de entrarmos para a operação</strong> — assim dá tempo tranquilo de você tomar o café da manhã oferecido pela empresa e fazer suas coisas antes de iniciar o turno.</p>
+      </div>
+
+      <div class="guide-section">
+        <h3>🍽️ Almoço no Local e Espaço de Descanso</h3>
+        <p>No horário de almoço, a refeição é servida no refeitório da unidade com <strong>opções de duas misturas, acompanhamentos, uma sobremesa e suco</strong>. Você também tem à disposição um <strong>espaço para descanso</strong> durante o seu intervalo.</p>
+      </div>
+
+      <div class="guide-section">
+        <h3>👷 Como é o 1º Dia (Integração), Bota e Uniforme</h3>
+        <p>No primeiro dia acontece a <strong>Integração</strong>, onde vão apresentar a empresa e explicar como tudo funciona. Em seguida, vão te apresentar a operação, onde terá uma pessoa dedicada para ensinar vocês como realizar o serviço dentro do Mercado Livre.</p>
+        <p>Será disponibilizada uma <strong>bota de segurança</strong> e, no primeiro dia, vocês utilizarão um colete. Passando o período de experiência, eles disponibilizam o <strong>uniforme completo</strong> (porém, há ocasiões em que o uniforme já é liberado no período de 1 mês).</p>
+      </div>
+
+      <div class="guide-section">
+        <h3>🏥 Dica do Michel: Plano de Saúde e Benefícios</h3>
+        <p>Para quem permanece na empresa, há <strong>Participação nos Lucros (PLR)</strong>, premiações, <strong>Auxílio-Creche</strong> para quem tem crianças e <strong>Plano de Saúde e Odontológico</strong> tanto para você (100% gratuito para o titular) quanto para dependentes (para dependente há uma coparticipação que gira em torno de <strong>R$ 60,00</strong>).</p>
+        <div class="tip-highlight">
+          <strong>💡 Recomendação do Michel:</strong> No dia da Integração, quando apresentarem os benefícios e você puder escolher o plano de saúde, <strong>recomendo escolher o Bradesco Saúde</strong>!
+        </div>
+      </div>
+
+      <div class="guide-section">
+        <h3>💰 Benefícios e Bonificações Meli</h3>
+        <ul>
+          <li><strong>Bônus Presença (até R$ 200/mês):</strong> Sem faltas: <strong>R$ 200,00</strong> | Com 1 falta: <strong>R$ 100,00</strong>.</li>
+          <li><strong>Bônus T2:</strong> <strong>R$ 400,00</strong>.</li>
+          <li><strong>Bônus de Boas-Vindas:</strong> Após 30 dias ativo: <strong>R$ 300,00</strong> no mês seguinte | Após 90 dias ativo: <strong>R$ 700,00</strong> subsequente.</li>
+          <li><strong>Bônus Semestral:</strong> Reconhecimento 2x ao ano, conforme desempenho e presencialidade.</li>
+          <li><strong>Programa de Indicação:</strong> Até <strong>R$ 600/mês</strong> por indicação para vaga de REP I, após 90 dias do indicado.</li>
+          <li><strong>Convênio Médico e Odontológico Bradesco:</strong> 100% subsidiado para o titular, com possibilidade de inclusão de dependentes mediante coparticipação.</li>
+          <li><strong>Alimentação:</strong> 1 refeição + 1 café por turno + <strong>Vale-alimentação de R$ 483,00</strong>.</li>
+          <li><strong>Transporte:</strong> Fretado gratuito + VT.</li>
+          <li><strong>Seguro de Vida:</strong> Cobertura de 12 salários + auxílio funeral para titular e dependentes.</li>
+          <li><strong>Auxílio-creche:</strong> Até <strong>R$ 576,00/mês</strong> por filho + <strong>Presente de nascimento:</strong> R$ 385,00 em cupom para itens de bebê.</li>
+          <li><strong>Saúde Emocional e Apoio:</strong> Terapia Online (4 sessões mensais gratuitas) + <strong>EAP</strong> (orientação psicológica, jurídica, financeira e nutricional).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-qualtrics">
+    Sistema Integrado de Indicação Meli — SP14 Cajamar/SP
+  </div>
+
+  <script>
+    // SUA URL OFICIAL JÁ CONFIGURADA:
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxHm1ba6RcqbCDj2jLJiAWu9AdHYD2KPVmHo6QzGTOwJswZpo47rxk8bhf22q8LxWF4lA/exec";
+
+    // Limpa qualquer bloqueio antigo salvo no navegador
+    localStorage.removeItem('meli_indicados_sp14');
+
+    function abrirFoto() {
+      document.getElementById('photo-modal').classList.add('active');
+    }
+
+    function fecharFoto() {
+      document.getElementById('photo-modal').classList.remove('active');
+    }
+
+    function nomeEhCompleto(texto) {
+      const limpo = texto.trim().replace(/\s+/g, ' ');
+      if (!/^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/.test(limpo)) return false;
+
+      const partes = limpo.split(' ');
+      if (partes.length < 2) return false;
+
+      const conectores = ['de', 'da', 'do', 'dos', 'das', 'e'];
+      const ultimaPalavra = partes[partes.length - 1].toLowerCase();
+
+      if (conectores.includes(ultimaPalavra) || ultimaPalavra.length < 3) return false;
+
+      const nomesReais = partes.filter(p => !conectores.includes(p.toLowerCase()));
+      if (nomesReais.length < 2) return false;
+
+      for (const p of nomesReais) {
+        if (p.length < 3) return false;
+        if (!/[aeiouáéíóúâêôãõàü]/i.test(p)) return false;
+        if (/^(.)\1+$/.test(p.toLowerCase())) return false;
+      }
+
+      return true;
+    }
+
+    function validarNomeEmTempoReal() {
+      const inputNome = document.getElementById('nome');
+      const erroNome = document.getElementById('erro-nome');
+      if (nomeEhCompleto(inputNome.value)) {
+        inputNome.classList.remove('input-error');
+        erroNome.style.display = 'none';
+      }
+    }
+
+    function irParaTelaPrivacidade(e) {
+      e.preventDefault();
+      const inputNome = document.getElementById('nome');
+      const erroNome = document.getElementById('erro-nome');
+      const form = document.getElementById('form-step-1');
+
+      if (!nomeEhCompleto(inputNome.value)) {
+        inputNome.classList.add('input-error');
+        erroNome.style.display = 'block';
+        inputNome.focus();
+        return;
+      }
+
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      const tel = document.getElementById('telefone').value.replace(/\D/g, '');
+      if (tel.length < 10 || tel.length > 11) {
+        alert('Por favor, digite o telefone com DDD apenas com números (exemplo: 11932455467).');
+        document.getElementById('telefone').focus();
+        return;
+      }
+
+      document.getElementById('step-1').classList.add('hidden');
+      document.getElementById('step-2').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function voltarParaTela1() {
+      document.getElementById('step-2').classList.add('hidden');
+      document.getElementById('step-1').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function finalizarEnvio(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btn-finalizar');
+      const btnVoltar = document.getElementById('btn-voltar');
+      btn.disabled = true;
+      btnVoltar.disabled = true;
+      btn.innerText = 'Enviando a indicação... Aguarde...';
+
+      const payload = {
+        acao: "salvar_candidato",
+        nome: document.getElementById('nome').value.trim().replace(/\s+/g, ' '),
+        telefone: document.getElementById('telefone').value.replace(/\D/g, ''),
+        email: document.getElementById('email').value.trim().toLowerCase(),
+        vaga: document.querySelector('input[name="vaga"]:checked').value,
+        pcd: document.querySelector('input[name="pcd"]:checked').value,
+        lgpd: "Confirmado"
+      };
+
+      fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(resposta => {
+        if (resposta.status === "sucesso") {
+          mostrarTelaFinal(false);
+        } else if (resposta.status === "duplicado") {
+          mostrarTelaFinal(true);
+        } else {
+          alert("⚠️ Erro retornado pela planilha: " + (resposta.detalhe || JSON.stringify(resposta)));
+          btn.disabled = false;
+          btnVoltar.disabled = false;
+          btn.innerText = 'Avançar >';
+        }
+      })
+      .catch(erro => {
+        alert("⚠️ Não foi possível conectar com a planilha.\n\n1. Confira se você atualizou a versão da implantação no Apps Script (Passo 2).\n2. Se estiver no navegador Brave, clique no Leão Laranja lá em cima e desative o bloqueador para este teste.");
+        btn.disabled = false;
+        btnVoltar.disabled = false;
+        btn.innerText = 'Avançar >';
+      });
+    }
+
+    function mostrarTelaFinal(ehDuplicado) {
+      document.getElementById('step-2').classList.add('hidden');
+      document.getElementById('step-3').classList.remove('hidden');
+      if (ehDuplicado) {
+        document.getElementById('banner-sucesso').style.display = 'none';
+        document.getElementById('banner-duplicado').style.display = 'block';
+      } else {
+        document.getElementById('banner-sucesso').style.display = 'block';
+        document.getElementById('banner-duplicado').style.display = 'none';
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
