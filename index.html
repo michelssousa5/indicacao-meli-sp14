@@ -164,9 +164,16 @@
       </div>
 
       <form id="form-step-1" onsubmit="irParaTelaPrivacidade(event)" novalidate>
+        
+        <!-- CAMPO HONEYPOT ANTI-BOT (INVISÍVEL PARA HUMANOS) -->
+        <div style="position: absolute; left: -9999px; top: -9999px;" aria-hidden="true">
+          <label for="website">Website</label>
+          <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" value="">
+        </div>
+
         <div class="form-group">
           <label class="question-title">* Nome completo da pessoa indicada:</label>
-          <input type="text" id="nome" required placeholder="Ex: João Carlos da Silva" oninput="validarNomeEmTempoReal()">
+          <input type="text" id="nome" required maxlength="80" placeholder="Ex: João Carlos da Silva" oninput="validarNomeEmTempoReal()">
           <div id="erro-nome" class="error-msg">
             ⚠️ Atenção: Digite seu <strong>nome e sobrenome completos e verdadeiros</strong> (abreviações ou apenas duas letras como "de/da" não são aceitas).
           </div>
@@ -183,7 +190,7 @@
         <div class="form-group">
           <label class="question-title">* E-mail da pessoa indicada:</label>
           <div class="hint-text">Você receberá uma confirmação automática da sua indicação neste e-mail.</div>
-          <input type="email" id="email" required placeholder="seuemail@exemplo.com">
+          <input type="email" id="email" required maxlength="120" placeholder="seuemail@exemplo.com">
         </div>
 
         <div class="form-group">
@@ -315,8 +322,8 @@
     // SUA URL OFICIAL JÁ CONFIGURADA:
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxHm1ba6RcqbCDj2jLJiAWu9AdHYD2KPVmHo6QzGTOwJswZpo47rxk8bhf22q8LxWF4lA/exec";
 
-    // Limpa qualquer bloqueio antigo salvo no navegador
-    localStorage.removeItem('meli_indicados_sp14');
+    // Regista o momento exato em que a página abriu para validação de tempo (anti-bot)
+    const TEMPO_ABERTURA_PAGINA = Date.now();
 
     function abrirFoto() {
       document.getElementById('photo-modal').classList.add('active');
@@ -403,6 +410,9 @@
       btnVoltar.disabled = true;
       btn.innerText = 'Enviando a indicação... Aguarde...';
 
+      // Calcula o tempo decorrido desde que a página abriu em milissegundos
+      const tempoDecorridoMs = Date.now() - TEMPO_ABERTURA_PAGINA;
+
       const payload = {
         acao: "salvar_candidato",
         nome: document.getElementById('nome').value.trim().replace(/\s+/g, ' '),
@@ -410,7 +420,9 @@
         email: document.getElementById('email').value.trim().toLowerCase(),
         vaga: document.querySelector('input[name="vaga"]:checked').value,
         pcd: document.querySelector('input[name="pcd"]:checked').value,
-        lgpd: "Confirmado"
+        lgpd: "Confirmado",
+        website: document.getElementById('website').value,
+        tempo_ms: tempoDecorridoMs
       };
 
       fetch(APPS_SCRIPT_URL, {
@@ -424,15 +436,20 @@
           mostrarTelaFinal(false);
         } else if (resposta.status === "duplicado") {
           mostrarTelaFinal(true);
+        } else if (resposta.status === "limite" || resposta.status === "ocupado") {
+          alert("⚠️ Muitas indicações no momento, tente novamente mais tarde.");
+          btn.disabled = false;
+          btnVoltar.disabled = false;
+          btn.innerText = 'Avançar >';
         } else {
-          alert("⚠️ Erro retornado pela planilha: " + (resposta.detalhe || JSON.stringify(resposta)));
+          alert("⚠️ Não foi possível enviar agora. Tente novamente em alguns minutos.");
           btn.disabled = false;
           btnVoltar.disabled = false;
           btn.innerText = 'Avançar >';
         }
       })
       .catch(erro => {
-        alert("⚠️ Não foi possível conectar com a planilha.\n\n1. Confira se você atualizou a versão da implantação no Apps Script (Passo 2).\n2. Se estiver no navegador Brave, clique no Leão Laranja lá em cima e desative o bloqueador para este teste.");
+        alert("⚠️ Não foi possível enviar agora. Tente novamente em alguns minutos.");
         btn.disabled = false;
         btnVoltar.disabled = false;
         btn.innerText = 'Avançar >';
