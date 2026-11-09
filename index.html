@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Programa de Indicação Meli — SP14 (Contratação Direta)</title>
+  <title>Canal Pessoal de Indicação — Michel Silva de Sousa (SP14)</title>
   <style>
     :root {
       --meli-yellow: #ffe600;
@@ -16,15 +16,46 @@
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
     body { margin: 0; background-color: var(--bg-gray); color: #333; -webkit-font-smoothing: antialiased; }
     
-    .header { background-color: var(--meli-yellow); padding: 14px 20px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #e6cf00; position: sticky; top: 0; z-index: 100; }
-    .header img { height: 38px; object-fit: contain; }
+    /* TOPO COM O AMARELO E AZUL-MARINHO ORIGINAIS */
+    .header {
+      background-color: var(--meli-yellow);
+      color: var(--meli-dark);
+      padding: 14px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      border-bottom: 1px solid #e6cf00;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--meli-dark);
+      margin: 0;
+      letter-spacing: -0.3px;
+      line-height: 1.2;
+    }
+    .header-subtitle {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--meli-dark);
+      opacity: 0.85;
+      margin-top: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
 
     .container { width: 100%; max-width: 580px; margin: 16px auto 40px; background: #fff; padding: 24px 20px; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
     @media (max-width: 600px) {
       .container { margin: 0 auto 20px; border-radius: 0 0 12px 12px; padding: 18px 16px; }
     }
 
-    .profile-card { display: flex; align-items: center; gap: 16px; background: #f8f9fa; border: 1px solid #e2e6ea; padding: 16px; border-radius: 10px; margin-bottom: 18px; }
+    /* CARD DE PERFIL COM BORDA AMARELA ORIGINAL */
+    .profile-card { display: flex; align-items: center; gap: 16px; background: #f8f9fa; border: 1px solid #e2e6ea; padding: 16px; border-radius: 10px; margin-bottom: 16px; }
     .profile-img-wrapper { position: relative; flex-shrink: 0; cursor: zoom-in; }
     .profile-img { width: 84px; height: 84px; border-radius: 50%; object-fit: cover; border: 3px solid var(--meli-yellow); box-shadow: 0 2px 6px rgba(0,0,0,0.15); display: block; transition: transform 0.2s; }
     .profile-img-wrapper:hover .profile-img { transform: scale(1.05); }
@@ -45,6 +76,35 @@
       .social-links { justify-content: center; }
     }
 
+    /* BLOCO "SOBRE ESTA PÁGINA" INTEGRADO AO ESTILO ORIGINAL */
+    .about-page-box {
+      background-color: #fffdf0;
+      border: 1px solid #f2dfa0;
+      border-left: 4px solid var(--meli-dark);
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #333;
+    }
+    .about-page-box h4 {
+      margin: 0 0 6px 0;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--meli-dark);
+      text-transform: uppercase;
+    }
+    .about-page-box p {
+      margin: 0 0 6px 0;
+    }
+    .about-page-box p:last-child {
+      margin-bottom: 0;
+      font-weight: 700;
+      color: #111;
+    }
+
+    /* MODAL DA FOTO */
     .photo-modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.92); align-items: center; justify-content: center; flex-direction: column; padding: 16px; cursor: zoom-out; }
     .photo-modal.active { display: flex; animation: fadeIn 0.2s ease-in-out; }
     .photo-modal img { max-width: 95%; max-height: 82vh; border-radius: 10px; border: 3px solid var(--meli-yellow); box-shadow: 0 8px 30px rgba(0,0,0,0.6); object-fit: contain; }
@@ -108,7 +168,7 @@
     .tip-highlight { background: #fff9db; border-left: 4px solid #f59f00; padding: 12px; border-radius: 6px; font-size: 13.5px; line-height: 1.5; margin-top: 10px; }
 
     .hidden { display: none; }
-    .footer-qualtrics { text-align: center; font-size: 12px; color: #666; padding: 18px; background: var(--meli-yellow); margin-top: 30px; }
+    .footer-qualtrics { text-align: center; font-size: 12px; color: var(--meli-dark); padding: 18px; background: var(--meli-yellow); margin-top: 30px; line-height: 1.5; }
   </style>
 </head>
 <body>
@@ -118,14 +178,15 @@
     <span class="close-modal">&times;</span>
     <img src="michel.jpg" alt="Michel Silva de Sousa - Tela Cheia">
     <div class="photo-modal-caption">
-      <strong>Michel Silva de Sousa</strong> — Setor de Inventário (Mercado Livre SP14)<br>
+      <strong>Michel Silva de Sousa</strong> — Funcionário do Mercado Livre — Setor de Inventário (SP14)<br>
       <small>(Toque em qualquer lugar para fechar)</small>
     </div>
   </div>
 
-  <!-- TOPO COM LOGO DO MERCADO LIVRE -->
+  <!-- TOPO COM AS CORES ORIGINAIS (AMARELO #FFE600 E AZUL-MARINHO #2D3277) -->
   <div class="header">
-    <img src="https://survey.mercadolibre.com/CP/Graphic.php?IM=IM_51G921loG9YpNhs" alt="Mercado Livre">
+    <div class="header-title">VAGAS NO MERCADO LIVRE EU POSSO TE INDICAR!</div>
+    <div class="header-subtitle">FUNCIONARIO DO MERCADO LIVRE</div>
   </div>
 
   <div class="container">
@@ -136,8 +197,8 @@
         <div class="zoom-hint">🔍 Ampliar foto</div>
       </div>
       <div class="profile-info">
-        <h2>Indicação Oficial: Michel Silva de Sousa</h2>
-        <p>Funcionário do Mercado Livre — Setor de <strong>Inventário (SP14 - Cajamar/SP)</strong>.<br>Verifique minhas redes sociais oficiais abaixo:</p>
+        <h2>Indicação direta por Michel Silva de Sousa</h2>
+        <p>Funcionário do Mercado Livre - Setor de <strong>Inventário (SP14 - Cajamar/SP)</strong>.<br>Verifique minhas redes sociais oficiais abaixo:</p>
         <div class="social-links">
           <a href="https://www.linkedin.com/in/michel-s-sousa/" target="_blank" rel="noopener noreferrer" class="social-btn btn-linkedin">LinkedIn</a>
           <a href="https://www.instagram.com/michelssousa55/" target="_blank" rel="noopener noreferrer" class="social-btn btn-instagram">Instagram</a>
@@ -146,20 +207,34 @@
       </div>
     </div>
 
+    <!-- BLOCO: SOBRE ESTA PÁGINA -->
+    <div class="about-page-box">
+      <h4>ℹ️ Sobre esta página</h4>
+      <p>
+        Esta é uma iniciativa pessoal de <strong>Michel Silva de Sousa</strong>, funcionário do Mercado Livre, que realiza indicações de candidatos para oportunidades de trabalho.
+      </p>
+      <p>
+        Esta página <strong>não é um canal oficial de recrutamento</strong>, não representa o RH e não garante contratação. A seleção e a contratação são realizadas conforme os critérios e procedimentos da empresa.
+      </p>
+      <p>
+        A indicação não tem custo para o candidato. Nunca faça pagamentos para participar de processos seletivos.
+      </p>
+    </div>
+
     <!-- ================= TELA 1: DADOS DO CANDIDATO ================= -->
     <div id="step-1">
       <div class="direct-hire-banner">
-        <strong>✅ CONTRATAÇÃO DIRETA PELO MERCADO LIVRE (NÃO É AGÊNCIA!)</strong><br>
-        Esta indicação é para vaga <strong>100% efetiva (CLT) direto pelo Mercado Livre</strong> na unidade SP14. Não cobramos nada e não pedimos seu CPF.
+        <strong>✅ CANAL PESSOAL DE INDICAÇÃO PARA OPORTUNIDADES NO MERCADO LIVRE</strong><br>
+        Oportunidades para <strong>contratação CLT para Mercado Livre</strong>, conforme disponibilidade, aprovação no processo seletivo e condições da vaga. Não cobro nada e não peço seu CPF neste formulário.
       </div>
 
       <div class="reqs-box">
-        <strong>📋 Requisitos e Turnos Disponíveis:</strong>
+        <strong>📋 Requisitos Básicos e Turnos (Sujeitos à disponibilidade da vaga):</strong>
         <ul>
           <li><strong>Escolaridade:</strong> Ensino Fundamental completo</li>
           <li><strong>Idade:</strong> Maior de 18 anos</li>
-          <li><strong>Experiência:</strong> Não é necessário ter experiência (para Rep de Envios)!</li>
-          <li><strong>Turnos disponíveis:</strong> Manhã | Tarde | Noite/Madrugada</li>
+          <li><strong>Experiência:</strong> Não é necessário ter experiência para Representante de Envios</li>
+          <li><strong>Turnos (conforme vagas abertas):</strong> Manhã | Tarde | Noite/Madrugada</li>
         </ul>
       </div>
 
@@ -189,13 +264,13 @@
 
         <div class="form-group">
           <label class="question-title">* E-mail da pessoa indicada:</label>
-          <div class="hint-text">Você receberá uma confirmação automática da sua indicação neste e-mail.</div>
+          <div class="hint-text">Você receberá uma confirmação automática da sua solicitação de indicação neste e-mail.</div>
           <input type="email" id="email" required maxlength="120" placeholder="seuemail@exemplo.com">
         </div>
 
         <div class="form-group">
           <label class="question-title">* Para qual vaga você quer indicar essa pessoa?</label>
-          <div class="hint-text">Atenção: a vaga de Operador de Empilhadeira exige CNH - categoria B e curso de operador de empilhadeira concluído. Só indique se a pessoa já tem os dois.</div>
+          <div class="hint-text">Atenção: a vaga de Operador de Empilhadeira exige CNH - categoria B e curso de operador de empilhadeira concluído. Só selecione se a pessoa já possui ambos.</div>
           <label class="option-card">
             <input type="radio" name="vaga" value="Rep de Envios" required>
             <span>Rep de Envios</span>
@@ -230,15 +305,15 @@
     <div id="step-2" class="hidden">
       <form id="form-step-2" onsubmit="finalizarEnvio(event)">
         <div class="privacy-title">
-          * Declaração de privacidade<br>
-          Para mais detalhes sobre como tratamos dados pessoais, consulte nossa 
-          <a href="https://careers-meli.cdn.prismic.io/careers-meli/aOz8UZ5xUNkB147Q_br-declaracao-de-privacidade-2025.pdf" target="_blank" rel="noopener noreferrer">Política de Privacidade</a>.
+          <strong>* Consentimento e Declaração de Privacidade</strong><br>
+          Para mais detalhes sobre como o Mercado Livre trata os dados de candidatos indicados, consulte a 
+          <a href="https://careers-meli.cdn.prismic.io/careers-meli/aOz8UZ5xUNkB147Q_br-declaracao-de-privacidade-2025.pdf" target="_blank" rel="noopener noreferrer">Política de Privacidade de Carreiras do Mercado Livre</a>.
         </div>
 
         <label class="consent-card" id="card-lgpd">
           <input type="checkbox" id="lgpd-check" required onchange="document.getElementById('card-lgpd').classList.toggle('selected', this.checked)">
           <span>
-            Eu confirmo que obtive o consentimento da pessoa indicada para compartilhar seus dados pessoais, incluindo o CPF, com o Mercado Livre, e que a pessoa indicada está ciente de que suas informações serão utilizadas exclusivamente para verificação de vínculo empregatício e possíveis futuras comunicações relacionadas à sua candidatura.
+            Autorizo <strong>Michel Silva de Sousa</strong> a registrar meus dados informados neste formulário no programa de indicação interna do Mercado Livre, e confirmo estar ciente de que essas informações serão utilizadas exclusivamente para verificação de elegibilidade e possíveis comunicações futuras da empresa relacionadas à candidatura.
           </span>
         </label>
 
@@ -254,12 +329,12 @@
       
       <div id="banner-sucesso" class="success-banner">
         <h2>🎉 Indicação Enviada com Sucesso!</h2>
-        <p>Seus dados foram gravados na planilha oficial e enviamos um <strong>e-mail de confirmação</strong> para você! Sua indicação já está na fila do <strong>Mercado Livre (SP14 - Cajamar/SP)</strong>.</p>
+        <p>Seus dados foram registrados na minha lista de indicações e enviamos um <strong>e-mail de confirmação</strong> para você! Caso haja vagas compatíveis abertas no <strong>Mercado Livre</strong>, o RH poderá entrar em contato.</p>
       </div>
 
       <div id="banner-duplicado" class="duplicate-banner">
         <h2>⚠️ Você já foi indicado(a)!</h2>
-        <p>Identificamos na planilha oficial que este <strong>número de telefone ou e-mail já foi enviado anteriormente</strong> para o Mercado Livre por Michel Silva de Sousa. Não é necessário enviar novamente! Confira abaixo as orientações importantes:</p>
+        <p>Identificamos que este <strong>número de telefone ou e-mail já foi registrado anteriormente</strong> na lista de indicações de Michel Silva de Sousa. Não é necessário enviar novamente! Confira abaixo as orientações importantes:</p>
       </div>
 
       <div class="uber-alert-box">
@@ -297,10 +372,11 @@
 
       <div class="guide-section">
         <h3>💰 Benefícios e Bonificações Meli</h3>
+        <p><em>Os benefícios e bônus abaixo seguem as condições vigentes da empresa, sujeitos à elegibilidade do cargo, turno, unidade e assiduidade:</em></p>
         <ul>
           <li><strong>Bônus Presença (até R$ 200/mês):</strong> Sem faltas: <strong>R$ 200,00</strong> | Com 1 falta: <strong>R$ 100,00</strong>.</li>
-          <li><strong>Bônus T2:</strong> <strong>R$ 400,00</strong>.</li>
-          <li><strong>Bônus de Boas-Vindas:</strong> Após 30 dias ativo: <strong>R$ 300,00</strong> no mês seguinte | Após 90 dias ativo: <strong>R$ 700,00</strong> subsequente.</li>
+          <li><strong>Bônus T2:</strong> <strong>R$ 400,00</strong> (para colaboradores elegíveis).</li>
+          <li><strong>Bônus de Boas-Vindas:</strong> Após 30 dias ativo: <strong>R$ 300,00</strong> no mês seguinte | Após 90 dias ativo: <strong>R$ 700,00</strong> subsequente (conforme regras e datas da campanha).</li>
           <li><strong>Bônus Semestral:</strong> Reconhecimento 2x ao ano, conforme desempenho e presencialidade.</li>
           <li><strong>Programa de Indicação:</strong> Até <strong>R$ 600/mês</strong> por indicação para vaga de REP I, após 90 dias do indicado.</li>
           <li><strong>Convênio Médico e Odontológico Bradesco:</strong> 100% subsidiado para o titular, com possibilidade de inclusão de dependentes mediante coparticipação.</li>
@@ -315,14 +391,15 @@
   </div>
 
   <div class="footer-qualtrics">
-    Sistema Integrado de Indicação Meli — SP14 Cajamar/SP
+    <strong>Canal Pessoal de Indicação — Michel Silva de Sousa</strong><br>
+    Iniciativa independente de colaborador (SP14 Cajamar/SP). Esta página não é um canal oficial do Mercado Livre.
   </div>
 
   <script>
     // SUA URL OFICIAL JÁ CONFIGURADA:
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxHm1ba6RcqbCDj2jLJiAWu9AdHYD2KPVmHo6QzGTOwJswZpo47rxk8bhf22q8LxWF4lA/exec";
 
-    // Regista o momento exato em que a página abriu para validação de tempo (anti-bot)
+    // Registra o momento exato em que a página abriu para validação de tempo (anti-bot)
     const TEMPO_ABERTURA_PAGINA = Date.now();
 
     function abrirFoto() {
